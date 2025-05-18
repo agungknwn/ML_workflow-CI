@@ -1,5 +1,4 @@
 name: Train ML Model
-
 on:
   push:
     branches: [ main, master ]  # Added master branch for compatibility
@@ -30,10 +29,11 @@ jobs:
         cd MLProject
         mlflow run . --no-conda
     
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v3
+    - name: Upload model artifacts
+      uses: actions/upload-artifact@v4  # Updated to v4
       with:
         name: model-artifacts
         path: |
           MLProject/mlruns
           MLProject/screenshot_*.jpg
+        retention-days: 7  # Artifacts will be stored for 7 days
