@@ -1,0 +1,5 @@
+name: iris-classification
+
+entry_points:
+  main:
+    command: "python modelling.py"
