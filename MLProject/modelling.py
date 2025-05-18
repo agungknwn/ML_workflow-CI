@@ -118,10 +118,10 @@ def main():
     mlflow.set_experiment(experiment_name)
 
     # Load data - adjust path to look for data in the correct location
-    data_file = "../agungkurniawan_preprocessing.csv"
+    data_file = "../irisdataset_preprocessing.csv"
     # If file not found in parent directory, try current directory
     if not os.path.exists(data_file):
-        data_file = "agungkurniawan_preprocessing.csv"
+        data_file = "irisdataset_preprocessing.csv"
 
     data = load_data(data_file)
 
