@@ -24,10 +24,10 @@ jobs:
         pip install mlflow scikit-learn pandas numpy matplotlib seaborn
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     
-    - name: Run MLflow project
+    - name: Run MLflow model training
       run: |
         cd MLProject
-        mlflow run . --no-conda
+        python modelling.py
     
     - name: Upload model artifacts
       uses: actions/upload-artifact@v4  # Updated to v4
