@@ -248,7 +248,7 @@ def main():
     mlflow.set_experiment(experiment_name)
 
     # Load data
-    data_file = "penguins_preprocessed.csv"
+    data_file = "../penguins_preprocessed.csv"
     data = load_data(data_file)
 
     # Start MLflow run
