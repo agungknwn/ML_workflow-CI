@@ -1,6 +1,6 @@
-# Iris Classification with MLflow and GitHub Actions CI
+# Penguins Classification with MLflow and GitHub Actions CI
 
-This project demonstrates how to create a machine learning workflow for the Iris dataset using MLflow and GitHub Actions for continuous integration (CI).
+This project demonstrates how to create a machine learning workflow for the Penguins dataset using MLflow and GitHub Actions for continuous integration (CI).
 
 ## Project Structure
 
@@ -21,7 +21,7 @@ Workflow-CI/
 
 ## How It Works
 
-1. **MLflow Project**: The `MLProject` folder contains an MLflow project that defines how to train the Iris classification model. The project includes:
+1. **MLflow Project**: The `MLProject` folder contains an MLflow project that defines how to train the Penguins classification model. The project includes:
    - A main script (`modelling.py`) for training and evaluating the model
    - Environment specification (`conda.yaml`)
    - Project definition (`MLProject` file)

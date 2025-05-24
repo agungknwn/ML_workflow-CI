@@ -1,5 +1,5 @@
 # MLProject file for MLflow
-name: iris-classification
+name: penguins-classification
 
 conda_env: conda.yaml
 
