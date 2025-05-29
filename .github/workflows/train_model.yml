@@ -1,5 +1,4 @@
 name: Train ML Model with MLflow
-
 on:
   push:
     branches: [ main, master ]  # Added master branch for compatibility
@@ -18,7 +17,7 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '3.9'
-
+        
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -57,8 +56,8 @@ jobs:
       run: |
         echo "Running MLflow project from MLProject directory..."
         cd MLProject
-        mlflow run .
-      shell: bash -l {0}
+        mlflow run . --env-manager=local
+      shell: bash
     
     - name: List generated artifacts
       run: |
