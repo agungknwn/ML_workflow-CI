@@ -57,7 +57,7 @@ jobs:
       run: |
         echo "Running MLflow project from MLProject directory..."
         cd MLProject
-        mlflow run . --no-conda
+        mlflow run .
     
     - name: List generated artifacts
       run: |
