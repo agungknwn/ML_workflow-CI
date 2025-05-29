@@ -22,7 +22,7 @@ jobs:
     - name: Set up Miniconda
       uses: conda-incubator/setup-miniconda@v2
       with:
-        auto-update-conda: true
+        auto-update-conda: false
         python-version: 3.9
         activate-environment: base
 
@@ -65,6 +65,7 @@ jobs:
         echo "Running MLflow project from MLProject directory..."
         cd MLProject
         mlflow run .
+      shell: bash -l {0}
     
     - name: List generated artifacts
       run: |
