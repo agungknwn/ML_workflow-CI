@@ -239,74 +239,73 @@ def main():
     data_file = "../penguins_preprocessed.csv"
     data = load_data(data_file)
 
-    # Start MLflow run
-    with mlflow.start_run(run_name="random_forest_penguins_v1"):
-        logger.info(f"MLflow Run ID: {mlflow.active_run().info.run_id}")
+    # No need to start a new run — MLflow handles it when using `mlflow run`
+    logger.info(f"MLflow Run ID: {mlflow.active_run().info.run_id}")
 
-        # Prepare data
-        X_train, X_test, y_train, y_test = split_data(data)
+    # Prepare data
+    X_train, X_test, y_train, y_test = split_data(data)
 
-        # Train model with penguins-specific parameters
-        model_params = {
-            "n_estimators": 150,
-            "max_depth": 12,
-            "min_samples_split": 3,
-            "min_samples_leaf": 1,
-            "random_state": 42,
-        }
-        model, used_params = train_model(X_train, y_train, **model_params)
+    # Train model with penguins-specific parameters
+    model_params = {
+        "n_estimators": 150,
+        "max_depth": 12,
+        "min_samples_split": 3,
+        "min_samples_leaf": 1,
+        "random_state": 42,
+    }
+    model, used_params = train_model(X_train, y_train, **model_params)
 
-        # Evaluate model
-        metrics = evaluate_model(model, X_test, y_test)
+    # Evaluate model
+    metrics = evaluate_model(model, X_test, y_test)
 
-        # Log parameters
-        mlflow.log_param("model_type", "RandomForestClassifier")
-        mlflow.log_param("dataset", "penguins")
-        for param_name, param_value in used_params.items():
-            mlflow.log_param(param_name, param_value)
+    # Log parameters
+    mlflow.log_param("model_type", "RandomForestClassifier")
+    mlflow.log_param("dataset", "penguins")
+    for param_name, param_value in used_params.items():
+        mlflow.log_param(param_name, param_value)
 
-        mlflow.log_param("train_size", X_train.shape[0])
-        mlflow.log_param("test_size", X_test.shape[0])
-        mlflow.log_param("n_features", X_train.shape[1])
-        mlflow.log_param("n_classes", len(np.unique(y_train)))
+    mlflow.log_param("train_size", X_train.shape[0])
+    mlflow.log_param("test_size", X_test.shape[0])
+    mlflow.log_param("n_features", X_train.shape[1])
+    mlflow.log_param("n_classes", len(np.unique(y_train)))
 
-        # Log metrics
-        mlflow.log_metric("accuracy", metrics["accuracy"])
+    # Log metrics
+    mlflow.log_metric("accuracy", metrics["accuracy"])
 
-        # Calculate and log per-class metrics
-        y_pred = model.predict(X_test)
-        precision, recall, f1, _ = precision_recall_fscore_support(
-            y_test, y_pred, average="weighted"
-        )
-        mlflow.log_metric("precision_weighted", precision)
-        mlflow.log_metric("recall_weighted", recall)
-        mlflow.log_metric("f1_weighted", f1)
+    # Calculate and log per-class metrics
+    y_pred = model.predict(X_test)
+    precision, recall, f1, _ = precision_recall_fscore_support(
+        y_test, y_pred, average="weighted"
+    )
+    mlflow.log_metric("precision_weighted", precision)
+    mlflow.log_metric("recall_weighted", recall)
+    mlflow.log_metric("f1_weighted", f1)
 
-        # Log model
-        mlflow.sklearn.log_model(model, "penguins_classifier")
+    # Log model
+    mlflow.sklearn.log_model(model, "penguins_classifier")
 
-        # Log artifacts (visualizations)
-        artifact_files = [
-            "penguins_confusion_matrix.jpg",
-            "penguins_feature_importance.jpg",
-            "penguins_species_analysis.jpg",
-        ]
+    # Log artifacts (visualizations)
+    artifact_files = [
+        "penguins_confusion_matrix.jpg",
+        "penguins_feature_importance.jpg",
+        "penguins_species_analysis.jpg",
+    ]
 
-        for artifact_file in artifact_files:
-            if os.path.exists(artifact_file):
-                mlflow.log_artifact(artifact_file)
-                logger.info(f"Logged artifact: {artifact_file}")
+    for artifact_file in artifact_files:
+        if os.path.exists(artifact_file):
+            mlflow.log_artifact(artifact_file)
+            logger.info(f"Logged artifact: {artifact_file}")
 
-        logger.info(
-            "Penguins classification model training and evaluation complete with MLflow tracking"
-        )
-        logger.info(f"Final model accuracy: {metrics['accuracy']:.4f}")
+    logger.info(
+        "Penguins classification model training and evaluation complete with MLflow tracking"
+    )
+    logger.info(f"Final model accuracy: {metrics['accuracy']:.4f}")
 
-        return {
-            "model": model,
-            "metrics": metrics,
-            "run_id": mlflow.active_run().info.run_id,
-        }
+    return {
+        "model": model,
+        "metrics": metrics,
+        "run_id": mlflow.active_run().info.run_id,
+    }
 
 
 def predict_new_penguins(model_run_id, new_data):
