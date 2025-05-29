@@ -1,4 +1,5 @@
-name: Train ML Model
+name: Train ML Model with MLflow
+
 on:
   push:
     branches: [ main, master ]  # Added master branch for compatibility
@@ -11,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -24,16 +25,78 @@ jobs:
         pip install mlflow scikit-learn pandas numpy matplotlib seaborn
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     
-    - name: Run MLflow model training
+    - name: Verify MLflow installation
       run: |
+        mlflow --version
+        python -c "import mlflow; print(f'MLflow version: {mlflow.__version__}')"
+    
+    - name: List project files
+      run: |
+        echo "Root project structure:"
+        ls -la
+        echo "MLProject directory contents:"
+        if [ -d MLProject ]; then
+          ls -la MLProject/
+          echo "Checking MLproject file:"
+          if [ -f MLProject/MLproject ]; then
+            echo "MLproject found in MLProject/ directory"
+            cat MLProject/MLproject
+          fi
+        else
+          echo "MLProject directory not found"
+        fi
+    
+    - name: Copy data to MLProject directory
+      run: |
+        echo "Copying penguins_preprocessed.csv to MLProject directory..."
+        cp penguins_preprocessed.csv MLProject/
+        echo "Files in MLProject after copy:"
+        ls -la MLProject/
+    
+    - name: Run MLflow project
+      run: |
+        echo "Running MLflow project from MLProject directory..."
         cd MLProject
-        python modelling.py
+        mlflow run . --no-conda
+    
+    - name: List generated artifacts
+      run: |
+        echo "Generated files in MLProject directory:"
+        ls -la MLProject/
+        echo "MLflow runs directory:"
+        if [ -d MLProject/mlruns ]; then
+          find MLProject/mlruns -type f -name "*.json" | head -5
+          find MLProject/mlruns -type f -name "*.jpg" | head -5
+        else
+          echo "No mlruns directory found in MLProject/"
+        fi
     
     - name: Upload model artifacts
-      uses: actions/upload-artifact@v4  # Updated to v4
+      uses: actions/upload-artifact@v4
       with:
         name: model-artifacts
         path: |
-          MLProject/mlruns
-          MLProject/screenshot_*.jpg
-        retention-days: 7  # Artifacts will be stored for 7 days
+          MLProject/mlruns/
+          MLProject/*.jpg
+          MLProject/*.png
+          MLProject/*.pkl
+        retention-days: 7
+      # Continue even if some files don't exist
+      continue-on-error: true
+    
+    - name: Upload MLflow tracking data
+      uses: actions/upload-artifact@v4
+      with:
+        name: mlflow-tracking
+        path: MLProject/mlruns/
+        retention-days: 30
+      continue-on-error: true
+    
+    - name: Display training results
+      run: |
+        echo "=== Training Complete ==="
+        if [ -f MLProject/*.jpg ]; then
+          echo "Generated visualizations:"
+          ls -la MLProject/*.jpg
+        fi
+        echo "Check the 'Actions' tab for downloadable artifacts"
