@@ -8,7 +8,6 @@ from sklearn.metrics import (
     accuracy_score,
     classification_report,
     confusion_matrix,
-    precision_recall_fscore_support,
 )
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -235,13 +234,15 @@ def main():
     experiment_name = "penguins-species-classification"
     mlflow.set_experiment(experiment_name)
 
-    # Load data
-    data_file = "penguins_preprocessed.csv"  # Updated path since data is copied to MLProject directory
-    data = load_data(data_file)
+    # enable autolog
+    mlflow.sklearn.autolog()
 
     # Explicitly start MLflow run
     with mlflow.start_run() as run:
         logger.info(f"MLflow Run ID: {run.info.run_id}")
+
+        # Load data
+        data = load_data("penguins_preprocessed.csv")
 
         # Prepare data
         X_train, X_test, y_train, y_test = split_data(data)
@@ -254,35 +255,10 @@ def main():
             "min_samples_leaf": 1,
             "random_state": 42,
         }
-        model, used_params = train_model(X_train, y_train, **model_params)
+        model, _ = train_model(X_train, y_train, **model_params)
 
         # Evaluate model
         metrics = evaluate_model(model, X_test, y_test)
-
-        # Log parameters
-        mlflow.log_param("model_type", "RandomForestClassifier")
-        mlflow.log_param("dataset", "penguins")
-        for param_name, param_value in used_params.items():
-            mlflow.log_param(param_name, param_value)
-        mlflow.log_param("train_size", X_train.shape[0])
-        mlflow.log_param("test_size", X_test.shape[0])
-        mlflow.log_param("n_features", X_train.shape[1])
-        mlflow.log_param("n_classes", len(np.unique(y_train)))
-
-        # Log metrics
-        mlflow.log_metric("accuracy", metrics["accuracy"])
-
-        # Calculate and log per-class metrics
-        y_pred = model.predict(X_test)
-        precision, recall, f1, _ = precision_recall_fscore_support(
-            y_test, y_pred, average="weighted"
-        )
-        mlflow.log_metric("precision_weighted", precision)
-        mlflow.log_metric("recall_weighted", recall)
-        mlflow.log_metric("f1_weighted", f1)
-
-        # Log model
-        mlflow.sklearn.log_model(model, "penguins_classifier")
 
         # Log artifacts (visualizations)
         artifact_files = [
@@ -313,7 +289,7 @@ def predict_new_penguins(model_run_id, new_data):
     """
     if model_run_id:
         # Load model from MLflow
-        model_uri = f"runs:/{model_run_id}/penguins_classifier"
+        model_uri = f"runs:/{model_run_id}/model"
         model = mlflow.sklearn.load_model(model_uri)
         logger.info(f"Loaded model from MLflow run: {model_run_id}")
 
