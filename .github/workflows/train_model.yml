@@ -31,20 +31,13 @@ jobs:
       run: |
         mlflow --version
         python -c "import mlflow; print(f'MLflow version: {mlflow.__version__}')"
-    
-    - name: Copy data to MLProject directory
-      run: |
-        echo "Copying penguins_preprocessed.csv to MLProject directory..."
-        cp penguins_preprocessed.csv MLProject/
-        echo "Files in MLProject after copy:"
-        ls -la MLProject/
-    
+   
     - name: Run MLflow project
       shell: bash -l {0}
       run: |
         echo "Running MLflow project from MLProject directory..."
         cd MLProject
-        mlflow run .
+        mlflow run . --experiment-name penguins-species-classification
     
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
