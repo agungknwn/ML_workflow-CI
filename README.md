@@ -43,14 +43,16 @@ Workflow-CI/
 
 1. Clone this repository:
    ```
-   git clone <repository-url>
-   cd Workflow-CI
+   git clone https://github.com/agungknwn/ML_workflow-CI.git
+   cd ML_Workflow-CI
    ```
 
 2. Run the MLflow project locally:
    ```
    cd MLProject
-   mlflow run .
+   conda env create -f conda.yaml
+   conda activate penguins-classification
+   mlflow run . --experiment-name penguins-species-classification
    ```
 
 ### Trigger CI Workflow
