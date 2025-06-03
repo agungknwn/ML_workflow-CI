@@ -247,15 +247,7 @@ def main():
         # Prepare data
         X_train, X_test, y_train, y_test = split_data(data)
 
-        # Train model with penguins-specific parameters
-        model_params = {
-            "n_estimators": 150,
-            "max_depth": 12,
-            "min_samples_split": 3,
-            "min_samples_leaf": 1,
-            "random_state": 42,
-        }
-        model, _ = train_model(X_train, y_train, **model_params)
+        model, _ = train_model(X_train, y_train)
 
         # Evaluate model
         metrics = evaluate_model(model, X_test, y_test)
