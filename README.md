@@ -7,16 +7,16 @@ This project demonstrates how to create a machine learning workflow for the Peng
 ```
 Workflow-CI/
 │
-├── .workflow/
-│   └── train_model.yml    # GitHub Actions workflow configuration
+├── .github/workflows/
+│   └── train_model.yml              # GitHub Actions workflow configuration
 │
-├── MLProject/             # MLflow project folder
-│   ├── MLProject          # MLflow project definition file
-│   ├── modelling.py       # Main model training script
-│   ├── conda.yaml         # Conda environment specification
-│   └── MLProject          # MLflow project definition
+├── MLProject/                       # MLflow project folder
+│   ├── MLProject                    # MLflow project definition file
+│   ├── modelling.py                 # Main model training script
+│   ├── conda.yaml                   # Conda environment specification
+│   └── penguins_preprocessed.csv    # Preprocessed dataset
 │
-└── agungkurniawan_preprocessing.csv  # Preprocessed dataset
+└── README.md                        # Project documentation
 ```
 
 ## How It Works
@@ -26,7 +26,7 @@ Workflow-CI/
    - Environment specification (`conda.yaml`)
    - Project definition (`MLProject` file)
 
-2. **GitHub Actions Workflow**: The workflow is defined in `.workflow/train_model.yml` and is triggered:
+2. **GitHub Actions Workflow**: The workflow is defined in `.github/workflows/train_model.yml` and is triggered:
    - On push to the main branch
    - On pull requests to the main branch
    - Manually via workflow dispatch
